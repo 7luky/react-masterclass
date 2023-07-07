@@ -21,17 +21,33 @@ function Chart({ coinId }: ChartProps) {
   const { isLoading, data } = useQuery<IHistorical[]>(["ohlcv", coinId], () =>
     fetchCoinHistory(coinId)
   );
+
+  // const test2 = {
+  //   data: data?.map((item) => ({
+  //     x: new Date(item.time_close * 1000).toISOString().slice(0, 10),
+  //     y: [item.open, item.high, item.low, item.close],
+  //   })),
+  // };
+
+  // console.log(test2);
+
   return (
     <div>
       {isLoading ? (
         "Loading chart..."
       ) : (
         <ApexChart
-          type="line"
+          type="candlestick"
           series={[
             {
               name: "Price",
-              data: data?.map((price) => price.close) as number[],
+              data:
+                data?.map((item) => ({
+                  x: new Date(item.time_close * 1000)
+                    .toISOString()
+                    .slice(0, 10),
+                  y: [item.open, item.high, item.low, item.close],
+                })) || [],
             },
           ]}
           options={{
@@ -47,14 +63,17 @@ function Chart({ coinId }: ChartProps) {
               background: "transparent",
             },
             grid: {
-              show: false,
+              show: true,
             },
             stroke: {
               curve: "smooth",
               width: 2,
             },
             yaxis: {
-              show: false,
+              show: true,
+              tooltip: {
+                enabled: false,
+              },
             },
             xaxis: {
               axisBorder: { show: false },
@@ -62,20 +81,27 @@ function Chart({ coinId }: ChartProps) {
                 show: false,
               },
               labels: {
-                show: true,
+                show: false,
               },
               categories: data?.map((price) =>
                 new Date(price.time_close * 1000).toISOString().slice(0, 10)
               ),
             },
-            fill: {
-              type: "gradient",
-              gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
-            },
-            colors: ["#0fbcf9"],
+            // fill: {
+            //   type: "gradient",
+            //   gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
+            // },
+            // colors: ["#0fbcf9"],
             tooltip: {
               y: {
                 formatter: (value) => `${value.toFixed(3)}`,
+              },
+            },
+            plotOptions: {
+              candlestick: {
+                wick: {
+                  useFillColor: true,
+                },
               },
             },
           }}
