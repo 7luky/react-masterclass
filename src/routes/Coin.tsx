@@ -48,6 +48,13 @@ const Header = styled.div`
   align-items: center;
 `;
 
+const HomeLink = styled.div`
+  background-color: #9b59b6;
+  margin-right: 30px;
+  padding: 10px;
+  cursor: pointer;
+`;
+
 const Title = styled.h1`
   font-size: 48px;
   color: ${(props) => props.theme.accentColor};
@@ -153,7 +160,9 @@ interface PriceData {
   };
 }
 
-function Coin() {
+interface ICoinProps {}
+
+function Coin({}: ICoinProps) {
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
   // const [loading, setLoading] = useState(true);
@@ -197,6 +206,9 @@ function Coin() {
         </title>
       </Helmet>
       <Header>
+        <HomeLink>
+          <Link to={"/"}>메인</Link>
+        </HomeLink>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
